@@ -11,6 +11,8 @@ export class GridCell {
 
   public revealed: boolean = false;
 
+  public hasFlag: boolean = false;
+
   public constructor(
     hasBomb: boolean,
     position: GridCellPosition,
@@ -35,8 +37,24 @@ export class GridCell {
     }
   }
 
+  public get surroundingCellsArray(): (GridCell | null)[] {
+    return Object.values(this.surroundingCells);
+  }
+
   public reveal(): void {
     this.revealed = true;
+
+    if (!this.hasBomb && this.numberOfSurroundingBombs === 0) {
+      this.surroundingCellsArray.forEach((cell) => {
+        if (cell !== null && !cell.revealed) {
+          cell.reveal();
+        }
+      });
+    }
+  }
+
+  public putFlag(): void {
+    this.hasFlag = true;
   }
 
   public setSurroundingCells(grid: FieldGrid): void {
@@ -113,9 +131,9 @@ export class GridCell {
 
   public setDownNeighbor(grid: FieldGrid): void {
     if (this.position.row === grid.numberOfRows) {
-      this.surroundingCells.up = null;
+      this.surroundingCells.down = null;
     } else {
-      this.surroundingCells.up = grid.getCellByPosition(
+      this.surroundingCells.down = grid.getCellByPosition(
         this.position.row + 1,
         this.position.column,
       );
@@ -127,9 +145,9 @@ export class GridCell {
       this.position.row === grid.numberOfRows
       || this.position.column === 1
     ) {
-      this.surroundingCells.downRight = null;
+      this.surroundingCells.downLeft = null;
     } else {
-      this.surroundingCells.downRight = grid.getCellByPosition(
+      this.surroundingCells.downLeft = grid.getCellByPosition(
         this.position.row + 1,
         this.position.column - 1,
       );
@@ -138,9 +156,9 @@ export class GridCell {
 
   public setLeftNeighbor(grid: FieldGrid): void {
     if (this.position.column === 1) {
-      this.surroundingCells.up = null;
+      this.surroundingCells.left = null;
     } else {
-      this.surroundingCells.up = grid.getCellByPosition(
+      this.surroundingCells.left = grid.getCellByPosition(
         this.position.row,
         this.position.column - 1,
       );
@@ -148,7 +166,7 @@ export class GridCell {
   }
 
   public get numberOfSurroundingBombs(): number {
-    return Object.values(this.surroundingCells).reduce<number>(
+    return Object.values(this.surroundingCells).reduce(
       (accumulator, cell) => {
         return (cell !== null && cell.hasBomb)
           ? accumulator + 1

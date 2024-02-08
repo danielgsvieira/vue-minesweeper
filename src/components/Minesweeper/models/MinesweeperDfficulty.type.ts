@@ -1,0 +1,1 @@
+export type MinesweeperDifficulty = 'easy' | 'medium' | 'hard';
