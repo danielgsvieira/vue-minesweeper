@@ -22,22 +22,8 @@ const cellClasses = (cell: GridCell): Record<string, boolean> => {
 };
 
 const numberStyle = (cell: GridCell): StyleValue => ({
-  color: NumberOfBombsTextColorMap.get(cell.numberOfSurroundingBombs),
+  color: NumberOfBombsTextColorMap[cell.numberOfSurroundingBombs],
 });
-
-const handleCellClick = (cell: GridCell): void => {
-  if (!cell.hasFlag) {
-    if (cell.hasBomb) {
-      state.value.grid.cells.forEach((el) => el.reveal());
-    } else {
-      cell.reveal();
-    }
-  }
-};
-
-const handleCellRightClick = (cell: GridCell): void => {
-  cell.putFlag();
-};
 
 const numberOfRows = computed<number>(() => state.value.grid.numberOfRows);
 const numberOfColumns = computed<number>(() => state.value.grid.numberOfColumns);
@@ -50,8 +36,8 @@ const numberOfColumns = computed<number>(() => state.value.grid.numberOfColumns)
         v-for="(cell, cellIndex) in state.grid.cells"
         :key="cellIndex"
         :class="cellClasses(cell)"
-        @click="handleCellClick(cell)"
-        @contextmenu.prevent="handleCellRightClick(cell)"
+        @click="state.reveal(cell)"
+        @contextmenu.prevent="state.putFlag(cell)"
       >
         <template v-if="cell.revealed">
           <i v-if="cell.hasBomb" class="bi-circle-fill"></i>

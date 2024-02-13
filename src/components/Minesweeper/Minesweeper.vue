@@ -24,6 +24,9 @@ const state = useMinesweeperState();
       <div class="minesweeper-grid">
         <MinesweeperGrid />
       </div>
+      <div class="minesweeper-score">
+        score
+      </div>
     </div>
   </div>
 </template>

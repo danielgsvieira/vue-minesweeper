@@ -59,6 +59,14 @@ export class FieldGrid {
     }, []);
   };
 
+  public get cellsWithBombs(): GridCell[] {
+    return this.cells.filter((cell) => cell.hasBomb);
+  };
+
+  public get cellsWithoutBombs(): GridCell[] {
+    return this.cells.filter((cell) => !cell.hasBomb);
+  };
+
   public getCellByPosition(row: number, column: number): GridCell {
     if (row > this.numberOfRows || column > this.numberOfColumns) {
       throw new Error('Invalid position for a cell');
